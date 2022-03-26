@@ -129,4 +129,4 @@ dmypy.json
 .pyre/
 
 run_example.txt
-data_test_string.csv
+data/data_test_string.csv
