@@ -1,3 +1,5 @@
+import pandas as pd
+
 class Node:
     def __init__(self, data):
         self.left = None
@@ -19,7 +21,13 @@ class Node:
 
         self.left.print_tree()
         self.right.print_tree()
-    
+
+    def concat_leaf(self):
+        if self.left is None and self.right is None:
+            return self.data
+
+        return pd.concat([self.left.concat_leaf(), self.right.concat_leaf()])
+
     def sort_values(self, qi):
         self.data.sort_values(by=qi, inplace=True)
 
