@@ -26,12 +26,6 @@ if __name__ == '__main__':
     mondrian = Mondrian(k, dfm, qi)
     mondrian.anonymize_aux()
 
-    if DEBUG:
-        print('file result')
-        mondrian.tree.print_leaf()
-
-    dataframe_output = mondrian.tree.concat_leaf()
-
     #ofm = OutputFileManager('data/output.csv', dataframe_output)
     #ofm.write_output_file()
     
