@@ -3,7 +3,6 @@ import pandas as pd
 from config import DEBUG
 from classes.data_frame_manager import DataFrameManager
 from classes.mondrian import Mondrian
-from classes.output_file_manager import OutputFileManager
         
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -25,9 +24,8 @@ if __name__ == '__main__':
 
     mondrian = Mondrian(k, dfm, qi)
     mondrian.anonymize_aux()
-
-    #ofm = OutputFileManager('data/output.csv', dataframe_output)
-    #ofm.write_output_file()
+    mondrian.generalize_region()
+    mondrian.write_on_file("data/output.csv")
     
     if DEBUG:
         print('\nNORMALIZED DATA')

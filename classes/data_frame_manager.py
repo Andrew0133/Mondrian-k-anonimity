@@ -1,4 +1,6 @@
+import pandas as pd
 from config import DEBUG
+import os
 
 class DataFrameManager():
     def __init__(self, data, qis):
@@ -54,3 +56,13 @@ class DataFrameManager():
                     value=self.decoding_dict[qi][row[qi]],
                     inplace=True
                 )
+    
+    def df_from_list(self, partitions):
+        return pd.concat(partitions)
+
+    def write_output_file(self, partitions, path):
+        if not os.path.isfile(path):
+            self.df_from_list(partitions).to_csv(path, header='column_names', index=False, sep=";")
+        else:
+            os.remove(path)
+            self.df_from_list(partitions).to_csv(path, mode='a', header='column_names', index=False, sep=";")
