@@ -12,6 +12,7 @@ class Mondrian:
     def choose_dimension(self):
         """
         One heuristic, chooses the dimension with the widest (normalized) range of values.
+        :return: Quasi identifier
         """
         qi_max = 0
         dim = None
@@ -29,6 +30,11 @@ class Mondrian:
         self.anonymize(self.dfm.data)
 
     def anonymize(self, partition):
+        """
+        A Greedy Partitioning Algorithm
+        :param partition: Entire partition
+        :return: Anonymized data
+        """
         if partition is None or len(partition.index) <= self.k:            
             return #no allowable multidimensional cut for partition
         else:
@@ -47,7 +53,12 @@ class Mondrian:
 
     def create_partition(self, partition, dim, split_val, k):
         """
-        Partition function
+        Partition function splits the current partition in two sub partitions based on a split_val parameter.
+        :param partition: Entire partition
+        :param dim: Quasi identifier
+        :param split_val: Value used to split the partition
+        :param k: Size of group
+        :return: None if no allowable multidimensional cut for partition, sub partitions otherwise
         """
         partition_left = partition.loc[partition[dim] <= split_val]
         partition_right = partition.loc[partition[dim] > split_val]
@@ -58,28 +69,42 @@ class Mondrian:
         return (partition_left, partition_right)
 
     def frequency_set(self, partition, dim):
-        '''
+        """
         The frequency set of attribute A for partition P is the set of unique values of A in P, each paired with an integer
         indicating the number of times it appears in P
-        '''
+        :param partition: Entire partition
+        :param dim: Quasi identifier
+        :return: Occurence number of quasi identifier
+        """
         return [value for value in partition[dim]]
 
     def find_median(self, fs):
-        '''
+        """
         Standard median-finding algorithm
-        '''
+        :param fs: Frequency set
+        :return: Median value of fs
+        """
         return sum(fs) / len(fs)
 
     def sort_values(self, qi):
+        """
+        Function used to sort data frame based on qi
+        :param qi: Quasi identifier
+        :return: Data Frame sorted
+        """
         self.dfm.data.sort_values(by=qi, inplace=True)
 
     def generalize_region(self):
+        """
+        Recoding functions are constructed using summary statistics (Range statistic) from each region.
+        :return: Generalized partition
+        """
         generalized_partitions = []
         for partition in self.partitions:
             for q in self.qi:
                 partition = partition.sort_values(by=q)
                 min_val = partition[q].iloc[0]
-                max_val =  partition[q].iloc[-1]
+                max_val = partition[q].iloc[-1]
 
                 if min_val == max_val:
                     partition[q] = min_val

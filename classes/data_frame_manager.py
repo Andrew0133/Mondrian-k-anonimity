@@ -2,7 +2,12 @@ import pandas as pd
 from config import DEBUG
 import os
 
-class DataFrameManager():
+
+def df_from_list(partitions):
+    return pd.concat(partitions)
+
+
+class DataFrameManager:
     def __init__(self, data, qis):
         self.encoding_dict = { }
         self.decoding_dict = { }
@@ -56,13 +61,16 @@ class DataFrameManager():
                     value=self.decoding_dict[qi][row[qi]],
                     inplace=True
                 )
-    
-    def df_from_list(self, partitions):
-        return pd.concat(partitions)
 
     def write_output_file(self, partitions, path):
+        """
+        Function used to write generalized partitions on file
+        :param partitions: List of sub partitions
+        :param path: Path to save the file
+        :return:
+        """
         if not os.path.isfile(path):
-            self.df_from_list(partitions).to_csv(path, header='column_names', index=False, sep=";")
+            df_from_list(partitions).to_csv(path, header='column_names', index=False, sep=";")
         else:
             os.remove(path)
-            self.df_from_list(partitions).to_csv(path, mode='a', header='column_names', index=False, sep=";")
+            df_from_list(partitions).to_csv(path, mode='a', header='column_names', index=False, sep=";")
