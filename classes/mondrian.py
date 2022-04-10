@@ -28,6 +28,7 @@ class Mondrian:
 
     def anonymize_aux(self):
         self.anonymize(self.dfm.data)
+        self.generalize_region()
 
     def anonymize(self, partition):
         """
