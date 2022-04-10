@@ -52,7 +52,10 @@ class Mondrian:
             self.anonymize(lhs_rhs[1])
         else: #append partition to result
             if DEBUG:
+                print('PARTITION')
                 print(partition)
+                print('\n')
+                
             self.partitions.append(partition)
 
     def create_partition(self, partition, dim, split_val, k):

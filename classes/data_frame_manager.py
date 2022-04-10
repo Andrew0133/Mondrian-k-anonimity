@@ -50,18 +50,6 @@ class DataFrameManager:
     def print_data(self):
         print(self.data)
 
-    def denormalize_data(self):
-        """
-        Function used to denormalize qi values.
-        """
-        for index, row in self.data.iterrows():
-            for qi in self.decoding_dict.keys():
-                self.data[qi].replace(
-                    to_replace=[row[qi]],
-                    value=self.decoding_dict[qi][row[qi]],
-                    inplace=True
-                )
-
     def write_output_file(self, partitions, path):
         """
         Function used to write generalized partitions on file
