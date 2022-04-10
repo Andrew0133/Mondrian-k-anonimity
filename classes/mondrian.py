@@ -35,13 +35,17 @@ class Mondrian:
         :param partition: Entire partition
         :return: Anonymized data
         """
-        if partition is None or len(partition.index) <= self.k:            
+        if partition is None:            
             return #no allowable multidimensional cut for partition
-        else:
-            dim = self.choose_dimension()
-            fs = self.frequency_set(partition, dim)
-            split_val = self.find_median(fs)
-            lhs_rhs = self.create_partition(partition, dim, split_val, self.k)
+
+        if len(partition.index) <= self.k:
+            self.partitions.append(partition)
+            return
+
+        dim = self.choose_dimension()
+        fs = self.frequency_set(partition, dim)
+        split_val = self.find_median(fs)
+        lhs_rhs = self.create_partition(partition, dim, split_val, self.k)
 
         if lhs_rhs:
             self.anonymize(lhs_rhs[0])
@@ -106,15 +110,17 @@ class Mondrian:
                 min_val = partition[q].iloc[0]
                 max_val = partition[q].iloc[-1]
 
-                if min_val == max_val:
-                    partition[q] = min_val
+                if q in self.dfm.decoding_dict:
+                    generalized = ''
+
+                    for row_value in partition[q].unique():
+                        generalized += self.dfm.decoding_dict[q][row_value] + '~'
+                    
+                    generalized = generalized[:-1]
+                    partition[q] = generalized
                 else:
-                    if q in self.dfm.decoding_dict:
-                        generalized = ''
-                        for row_value in partition[q].unique():
-                            generalized += self.dfm.decoding_dict[q][row_value] + '~'
-                        generalized = generalized[:-1]
-                        partition[q] = generalized
+                    if min_val == max_val:
+                        partition[q] = min_val
                     else:
                         partition[q] = f'{min_val}~{max_val}'
 

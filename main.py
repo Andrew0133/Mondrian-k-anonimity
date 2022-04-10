@@ -9,7 +9,6 @@ if __name__ == '__main__':
     parser.add_argument('--qi', help='Quasi Identifier', required=True, type=str, nargs='+')
     parser.add_argument('--k', help='K-Anonimity', required=True, type=int)
     parser.add_argument('--dataset', help='Dataset to be anonymized', required=True, type=str)
-    parser.add_argument('--dgh', help='Domain Generalization Hierarchy', required=True, type=str)
     args = parser.parse_args()
 
     k = args.k
