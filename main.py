@@ -5,13 +5,39 @@ from config import DEBUG
 from classes.data_frame_manager import DataFrameManager
 from classes.mondrian import Mondrian
 from datetime import datetime
-        
+import matplotlib.pyplot as plt
+
+def plot_test(dfm):
+    k_list = [ 2, 10, 20, 40, 60, 80, 100 ]
+
+    avg_list = [ ]
+
+    for k_value in k_list:
+        mondrian = Mondrian(k_value, dfm, qi)
+        mondrian.anonymize_aux()
+        avg_list.append(round(mondrian.get_normalized_avg_equivalence_class_size(), 2))
+
+    fig, ax = plt.subplots(figsize=(12,8))
+    plt.plot(k_list, avg_list, marker='o')
+    plt.xlabel('k')
+    plt.ylabel('Normalized average equivalence class size metric (C AVG)')
+    plt.title('Normalized average equivalence class size metric (C AVG) vs k')
+
+    for index in range(len(k_list)):
+        ax.text(k_list[index], avg_list[index], avg_list[index])
+
+    plt.xticks(k_list)
+    plt.grid()
+    plt.savefig('data/plot_output.jpg')
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--qi', help='Quasi Identifier', required=True, type=str, nargs='+')
     parser.add_argument('--k', help='K-Anonimity', required=True, type=int)
     parser.add_argument('--dataset', help='Dataset to be anonymized', required=True, type=str)
     parser.add_argument('--rid', help='Remove id column', type=str, choices=['y', 'n'])
+    parser.add_argument('--plt', help='Test for different K saved in image', type=str, choices=['y', 'n'])
+
     args = parser.parse_args()
 
     k = args.k
@@ -33,7 +59,12 @@ if __name__ == '__main__':
     mondrian.anonymize_aux()
     end = (datetime.now() - start).total_seconds()
 
-    if DEBUG:
-        print("Finished in %.2f seconds (%.3f minutes (%.2f hours))" % (end, end / 60, end / 60 / 60))
-
+    print('k = %d' % k)
+    print('Finished in %.2f seconds (%.3f minutes (%.2f hours))' % (end, end / 60, end / 60 / 60))
+    print('Normalized average equivalence class size metric AVG %.2f' % mondrian.get_normalized_avg_equivalence_class_size())
+    
     mondrian.write_on_file("data/output.csv")
+
+    # used to test anonymization for different k values
+    if 'y' == args.plt:
+        plot_test(dfm)

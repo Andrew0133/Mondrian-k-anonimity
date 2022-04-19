@@ -134,4 +134,11 @@ class Mondrian:
 
     def write_on_file(self, path):
         self.dfm.write_output_file(self.partitions, path)
+
+    def get_normalized_avg_equivalence_class_size(self):
+        """
+        get_normalized_avg_equivalence_class_size measures how well partitioning approaches the best case
+        :return: avg
+        """
+        return (len(self.dfm.data) / len(self.partitions)) / self.k
             
