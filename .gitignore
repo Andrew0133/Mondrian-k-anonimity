@@ -132,3 +132,4 @@ run_example.txt
 data/data_test_string.csv
 data/output.csv
 .idea
+data/plot_output.jpg
