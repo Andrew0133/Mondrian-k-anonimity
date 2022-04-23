@@ -2,10 +2,8 @@ import pandas as pd
 from config import DEBUG
 import os
 
-
 def df_from_list(partitions):
     return pd.concat(partitions)
-
 
 class DataFrameManager:
     def __init__(self, data, qis):
@@ -14,38 +12,52 @@ class DataFrameManager:
         self.data = data
         self.normalize_data(qis)
 
+    def is_categorical_column(self, column):
+        """
+        Check if a column contains categorical values by looking the first row
+        :param column: column
+        :return: false if the first value is a number, true otherwise
+        """
+        try:
+            if int(self.data[column][0]) == self.data[column][0]:
+                return False
+        except ValueError:
+            return True
+
     def normalize_data(self, qis):
         """
         Normalize data function that transforms strings into numbers (for categorical data), skip column otherwise.
         """
-        for index, row in self.data.iterrows():
-            for qi in qis:
-                if type(row[qi]) == int or type(row[qi]) == float:
-                    continue
-                
-                if qi not in self.encoding_dict:
-                    self.encoding_dict[qi] = { }
-                    self.decoding_dict[qi] = { }
+        for qi in qis:
+            uniques = self.data[qi].unique()
 
-                if row[qi] not in self.encoding_dict[qi]:
+            if not self.is_categorical_column(qi):
+                continue
+                
+            if qi not in self.encoding_dict:
+                self.encoding_dict[qi] = { }
+                self.decoding_dict[qi] = { }
+
+            for unique in uniques:
+                if unique not in self.encoding_dict[qi]:
                     if any(self.encoding_dict[qi]):
                         value = self.encoding_dict[qi][list(self.encoding_dict[qi].keys())[-1]] + 1
                     else:
                         value = 0
 
-                    self.encoding_dict[qi][row[qi]] = value
-                    self.decoding_dict[qi][value] = row[qi]
+                    self.encoding_dict[qi][unique] = value
+                    self.decoding_dict[qi][value] = unique
 
                 self.data[qi].replace(
-                    to_replace=[row[qi]],
-                    value=self.encoding_dict[qi][row[qi]],
+                    to_replace=unique,
+                    value=self.encoding_dict[qi][unique],
                     inplace=True
                 )
-
-        if DEBUG:
-            print('\nENCODING AND DECODING DICTIONARIES')
-            print(self.encoding_dict)
-            print(self.decoding_dict)
+            
+            if DEBUG:
+                print('\nENCODING AND DECODING DICTIONARIES')
+                print(self.encoding_dict)
+                print(self.decoding_dict)
 
     def print_data(self):
         print(self.data)

@@ -9,41 +9,45 @@ class Mondrian:
         self.qi = qi
         self.partitions = [ ] #used to store regions
 
-    def choose_dimension(self):
+    def choose_dimension(self, examined_qi):
         """
         One heuristic, chooses the dimension with the widest (normalized) range of values.
+        :examined_qi: index of non-considered highest qi 
         :return: Quasi identifier
         """
-        qi_max = 0
-        dim = None
-        
+        dim = { }
+
         for q in self.qi:
             self.sort_values(q)
-            current_max = self.dfm.data[q].iloc[-1] - self.dfm.data[q].iloc[0]
-            if current_max > qi_max:
-                dim = q
-                qi_max = current_max
-        
-        return dim
+
+            dim[q] = self.dfm.data[q].iloc[-1] - self.dfm.data[q].iloc[0]
+
+        # sort dictionary using descending order
+        dim = sorted(dim.items(), key=lambda x: x[1], reverse=True)
+        return dim[examined_qi][0]
 
     def anonymize_aux(self):
         self.anonymize(self.dfm.data)
         self.generalize_region()
 
-    def anonymize(self, partition):
+    def anonymize(self, partition, examined_qi=0):
         """
         A Greedy Partitioning Algorithm
         :param partition: Entire partition
+        :examined_qi: Used to go the next qi in case of no allowable cut, based on normalization. Default 0, highest dimension
         :return: Anonymized data
         """
-        if partition is None:            
-            return #no allowable multidimensional cut for partition
-
-        if len(partition.index) <= self.k:
+        # if the partition can't be splitted
+        if len(partition) <= 2*self.k:
             self.partitions.append(partition)
             return
 
-        dim = self.choose_dimension()
+        # if qis are finished
+        if examined_qi == len(self.qi):
+            self.partitions.append(partition)
+            return
+
+        dim = self.choose_dimension(examined_qi)
         fs = self.frequency_set(partition, dim)
         split_val = self.find_median(fs)
         lhs_rhs = self.create_partition(partition, dim, split_val, self.k)
@@ -51,13 +55,9 @@ class Mondrian:
         if lhs_rhs:
             self.anonymize(lhs_rhs[0])
             self.anonymize(lhs_rhs[1])
-        else: #append partition to result
-            if DEBUG:
-                print('PARTITION')
-                print(partition)
-                print('\n')
-                
-            self.partitions.append(partition)
+        else: #append partition to result 
+            examined_qi += 1
+            self.anonymize(partition, examined_qi)
 
     def create_partition(self, partition, dim, split_val, k):
         """
@@ -73,7 +73,7 @@ class Mondrian:
         
         if len(partition_left) < k or len(partition_right) < k:
             return None
-        
+
         return (partition_left, partition_right)
 
     def frequency_set(self, partition, dim):
