@@ -1,4 +1,5 @@
 # Mondrian k-anonimity algorithm
+## Introduction
 Mondrian is a multidimensional k-anonymity model that anonymizes data through recursively splitting the attributes' dimensions with a median-partition strategy. This model is very fast and scalable.<br>
 The proposed solution is a Top-down greedy data anonymization algorithm for relational dataset, proposed by Kristen LeFevre in his papers.<br>
 The algorithm proposed by LeFevre imposes an intuitive ordering on each attribute. So, there are no generalization hierarchies for categorical attributes. This operation brings lower information loss, but worse semantic results.
@@ -18,6 +19,32 @@ With local recoding, individual records are mapped to generalized forms. In this
 
 ### Strict model
 In the strict mode, the algorithm splits a partition in two parts, lhs and rhs, by using a split value (median of partition projected on a quasi-identifier). These parts can't contain common split value, so there is no intersection between the two parts.
+
+### Performance metric
+To asses the performance of the anonymization algorithm we used the concept of normalized average equivalence class size metric (C<sub>AVG</sub>). This metric measures how well partitioning approaches the best case (information loss). The formula is shown below:<br>
+$$\frac{\frac{total Records}{total Equiv Classes}}{k}$$
+
+## Algorithm explanation
+The algorithm starts with choosing the dim, one heuristic, used in our implementation, chooses the dimension (quasi-identifier) with the widest (normalized) range of values. If there is no allowable cut for choosed dim and the partition is greater than 2*k the algorithm changes dimension (QI) with the next widest (normalized) range of values, until there is no allowable cut for partition considering all QI’s.<br>
+After the value has been chosen it is calculated the frequency set of the dim.<br>
+Then the split value is calculated using the standard median-finding algorithm. The split value is the median of the partition projected on dim.<br>
+Then the current partition is splitted in two sub partitions based on a split_val parameter.<br>
+In the end, the Anonymize algorithm is called recursively in both sub partitions.<br>
+
+## Pseudo-code algorithm
+The following pseudo-code is based on paper and it was the starting point for the implemented solution.
+```python
+Anonymize(partition)
+    if (no allowable multidimensional cut for partition)
+        return φ : partition → summary
+    else
+        dim ← choose_dimension()
+        fs ← frequency_set(partition, dim)
+        splitVal ← find_median(fs)
+        lhs ← {t ∈ partition : t.dim ≤ splitVal}
+        rhs ← {t ∈ partition : t.dim > splitVal}
+        return Anonymize(rhs) ∪ Anonymize(lhs)
+```
 
 ## Datasets
 For testing purpose there are different datasets in data folder:

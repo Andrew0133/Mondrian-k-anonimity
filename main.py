@@ -7,15 +7,23 @@ from classes.mondrian import Mondrian
 from datetime import datetime
 import matplotlib.pyplot as plt
 
-def plot_test(dfm):
+def plot_test(dfm, qi):
+    print('Started ananomyzation testing for different k values - this operations can take several minutes')
+
     k_list = [ 2, 10, 20, 40, 60, 80, 100 ]
 
     avg_list = [ ]
 
     for k_value in k_list:
+        if DEBUG:
+            print('[DEBUG] - Started ananomyzation for k = %d' % k_value)
+
         mondrian = Mondrian(k_value, dfm, qi)
         mondrian.anonymize_aux()
         avg_list.append(round(mondrian.get_normalized_avg_equivalence_class_size(), 2))
+        
+        if DEBUG:
+            print('[DEBUG] - Finished ananomyzation for k = %d' % k_value)
 
     fig, ax = plt.subplots(figsize=(12,8))
     plt.plot(k_list, avg_list, marker='o')
@@ -48,7 +56,7 @@ if __name__ == '__main__':
        df.drop('id', inplace=True, axis=1) 
 
     if DEBUG:
-        print('ORIGINAL DATASET')
+        print('[DEBUG] - ORIGINAL DATASET')
         print(df)
 
     dfm = DataFrameManager(df, qi)
@@ -67,4 +75,4 @@ if __name__ == '__main__':
 
     # used to test anonymization for different k values
     if 'y' == args.plt:
-        plot_test(dfm)
+        plot_test(dfm, qi)

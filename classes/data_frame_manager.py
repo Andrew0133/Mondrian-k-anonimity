@@ -55,7 +55,7 @@ class DataFrameManager:
                 )
             
             if DEBUG:
-                print('\nENCODING AND DECODING DICTIONARIES')
+                print('\n[DEBUG] - ENCODING AND DECODING DICTIONARIES')
                 print(self.encoding_dict)
                 print(self.decoding_dict)
 
