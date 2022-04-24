@@ -11,8 +11,8 @@ A QI set is a subset of attributes X<sub>1</sub>, ..., X<sub>d</sub> in table T 
 ### Equivalence class
 With respect to attributes X<sub>1</sub>, ..., X<sub>d</sub> in table T, an equivalence class is the set of all records in T containing identical values (x<sub>1</sub>, ..., x<sub>d</sub>) for X<sub>1</sub>, ..., X<sub>d</sub>.
 
-### Generalization and suppression
-The method of generalization transforms QI values into less specific, but semantically useful values so that records with the same transformed QI values are indistinguishable. For example, a zip code value of "50402" can be generalized to "5040*". Suppression refers to the removal of entire records or specific QI values from the table.
+### Generalization
+The method of generalization transforms QI values into less specific, but semantically useful values so that records with the same transformed QI values are indistinguishable.
 
 ### Local recoding
 With local recoding, individual records are mapped to generalized forms. In this method, the data space is partitioned into different regions and then all records in the same region are mapped to the same generalized record. For example, a value of "60" for age in two records could possibly be mapped to two different intervals of "[55–60]" and "[60–65]" respectively if the two records are partitioned to different regions. Both multi-dimensional recoding (described above) and local recoding can improve the quality of anonymization without over-generalization and result in less information loss.
