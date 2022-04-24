@@ -55,7 +55,7 @@ class Mondrian:
         if lhs_rhs:
             self.anonymize(lhs_rhs[0])
             self.anonymize(lhs_rhs[1])
-        else: #append partition to result 
+        else: 
             examined_qi += 1
             self.anonymize(partition, examined_qi)
 
