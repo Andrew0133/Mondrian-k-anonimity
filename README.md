@@ -21,8 +21,8 @@ With local recoding, individual records are mapped to generalized forms. In this
 In the strict mode, the algorithm splits a partition in two parts, lhs and rhs, by using a split value (median of partition projected on a quasi-identifier). These parts can't contain common split value, so there is no intersection between the two parts.
 
 ### Performance metric
-To asses the performance of the anonymization algorithm we used the concept of normalized average equivalence class size metric (C<sub>AVG</sub>). This metric measures how well partitioning approaches the best case (information loss). The formula is shown below:<br>
-<img src="https://render.githubusercontent.com/render/math?math=\LARGE \frac{\frac{total\_records}{total\_equiv\_classes}}{k}">
+To asses the performance of the anonymization algorithm we used the concept of normalized average equivalence class size metric (C<sub>AVG</sub>). This metric measures how well partitioning approaches the best case (information loss). The formula is shown below:<br><br>
+<img src="https://render.githubusercontent.com/render/math?math=\color{grey}\LARGE \frac{\frac{total\_records}{total\_equiv\_classes}}{k}">
 
 ## Algorithm explanation
 The algorithm starts with choosing the dim, one heuristic, used in our implementation, chooses the dimension (quasi-identifier) with the widest (normalized) range of values. If there is no allowable cut for choosed dim and the partition is greater than 2*k the algorithm changes dimension (QI) with the next widest (normalized) range of values, until there is no allowable cut for partition considering all QI’s.<br>
