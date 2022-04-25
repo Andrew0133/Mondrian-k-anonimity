@@ -50,10 +50,10 @@ class DataFrameManager:
                     self.encoding_dict[qi][unique] = value
                     self.decoding_dict[qi][value] = unique
 
-            self.data.replace(
-                self.encoding_dict,
-                inplace=True
-            )
+        self.data.replace(
+            self.encoding_dict,
+            inplace=True
+        )
             
         if DEBUG:
             print('\n[DEBUG] - ENCODING AND DECODING DICTIONARIES')
