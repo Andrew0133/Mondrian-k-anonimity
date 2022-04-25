@@ -1,5 +1,4 @@
 import argparse
-from importlib.machinery import DEBUG_BYTECODE_SUFFIXES
 import pandas as pd
 from config import DEBUG
 from classes.data_frame_manager import DataFrameManager
@@ -8,7 +7,7 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 
 def plot_test(dfm, qi):
-    print('Started ananomyzation testing for different k values - this operations can take several minutes')
+    print('Started ananomyzation testing for different k values - this operation can take several minutes')
 
     k_list = [ 2, 10, 20, 40, 60, 80, 100 ]
 
@@ -63,14 +62,15 @@ if __name__ == '__main__':
 
     mondrian = Mondrian(k, dfm, qi)
 
+    print('Starting anonymization for k = %d' % k)
     start = datetime.now()
     mondrian.anonymize_aux()
     end = (datetime.now() - start).total_seconds()
 
-    print('k = %d' % k)
     print('Finished in %.2f seconds (%.3f minutes (%.2f hours))' % (end, end / 60, end / 60 / 60))
     print('Normalized average equivalence class size metric AVG %.2f' % mondrian.get_normalized_avg_equivalence_class_size())
     
+    print('Writing anonymized data on file')
     mondrian.write_on_file("data/output.csv")
 
     # used to test anonymization for different k values

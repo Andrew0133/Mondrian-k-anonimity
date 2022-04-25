@@ -1,7 +1,5 @@
 from classes.data_frame_manager import DataFrameManager
 
-from config import DEBUG
-
 class Mondrian:
     def __init__(self, k: int, dfm: DataFrameManager, qi: list):
         self.k = k

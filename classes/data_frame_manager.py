@@ -28,6 +28,8 @@ class DataFrameManager:
         """
         Normalize data function that transforms strings into numbers (for categorical data), skip column otherwise.
         """
+        print('Starting normalization for categorical data - this operation can take several minutes')
+
         for qi in qis:
             uniques = self.data[qi].unique()
 
@@ -54,10 +56,12 @@ class DataFrameManager:
                     inplace=True
                 )
             
-            if DEBUG:
-                print('\n[DEBUG] - ENCODING AND DECODING DICTIONARIES')
-                print(self.encoding_dict)
-                print(self.decoding_dict)
+        if DEBUG:
+            print('\n[DEBUG] - ENCODING AND DECODING DICTIONARIES')
+            print(self.encoding_dict)
+            print(self.decoding_dict)
+        
+        print('Finished normalization')
 
     def print_data(self):
         print(self.data)
