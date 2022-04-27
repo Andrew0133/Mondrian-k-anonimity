@@ -49,7 +49,7 @@ if __name__ == '__main__':
 
     k = args.k
     df = pd.read_csv(args.dataset)
-    qi = [x for x in args.qi]
+    qi = args.qi
 
     if 'y' == args.rid:
        df.drop('id', inplace=True, axis=1) 

@@ -1,5 +1,15 @@
 from classes.data_frame_manager import DataFrameManager
 
+def frequency_set(partition, dim):
+    """
+    The frequency set of attribute A for partition P is the set of unique values of A in P, each paired with an integer
+    indicating the number of times it appears in P
+    :param partition: Entire partition
+    :param dim: Quasi identifier
+    :return: Occurence number of quasi identifier
+    """
+    return [value for value in partition[dim]]
+
 class Mondrian:
     def __init__(self, k: int, dfm: DataFrameManager, qi: list):
         self.k = k
@@ -46,7 +56,7 @@ class Mondrian:
             return
 
         dim = self.choose_dimension(examined_qi)
-        fs = self.frequency_set(partition, dim)
+        fs = frequency_set(partition, dim)
         split_val = self.find_median(fs)
         lhs_rhs = self.create_partition(partition, dim, split_val, self.k)
 
@@ -73,16 +83,6 @@ class Mondrian:
             return None
 
         return (partition_left, partition_right)
-
-    def frequency_set(self, partition, dim):
-        """
-        The frequency set of attribute A for partition P is the set of unique values of A in P, each paired with an integer
-        indicating the number of times it appears in P
-        :param partition: Entire partition
-        :param dim: Quasi identifier
-        :return: Occurence number of quasi identifier
-        """
-        return [value for value in partition[dim]]
 
     def find_median(self, fs):
         """
