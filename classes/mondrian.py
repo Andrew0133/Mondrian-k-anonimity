@@ -10,6 +10,14 @@ def frequency_set(partition, dim):
     """
     return [value for value in partition[dim]]
 
+def find_median(fs):
+    """
+    Standard median-finding algorithm
+    :param fs: Frequency set
+    :return: Median value of fs
+    """
+    return sum(fs) / len(fs)
+
 class Mondrian:
     def __init__(self, k: int, dfm: DataFrameManager, qi: list):
         self.k = k
@@ -57,7 +65,7 @@ class Mondrian:
 
         dim = self.choose_dimension(examined_qi)
         fs = frequency_set(partition, dim)
-        split_val = self.find_median(fs)
+        split_val = find_median(fs)
         lhs_rhs = self.create_partition(partition, dim, split_val, self.k)
 
         if lhs_rhs:
@@ -83,14 +91,6 @@ class Mondrian:
             return None
 
         return (partition_left, partition_right)
-
-    def find_median(self, fs):
-        """
-        Standard median-finding algorithm
-        :param fs: Frequency set
-        :return: Median value of fs
-        """
-        return sum(fs) / len(fs)
 
     def sort_values(self, qi):
         """
